@@ -23,6 +23,26 @@ class Assertions:
         assert key_name in response_as_dict, f"Response doesn't have a property '{key_name}'"
 
     @staticmethod
+    def assert_json_has_keys(response: Response, key_names: list):
+        try:
+            response_as_dict = response.json()
+        except json.decoder.JSONDecodeError:
+            assert False, f"Response isn't in JSON format. Response is: '{response.text}'"
+        for key_name in key_names:
+            assert key_name in response_as_dict, f"Response doesn't have a property '{key_name}'"
+
+    @staticmethod
     def assert_status_code_is(response: Response, expected_status_code):
         assert response.status_code == expected_status_code, f"Unexpected status code - {response.status_code}, " \
                                                              f"expected status code was - {expected_status_code}"
+
+    @staticmethod
+    def assert_json_doesnt_have_key(response: Response, key_name):
+        try:
+            response_as_dict = response.json()
+        except json.decoder.JSONDecodeError:
+            assert False, f"Response isn't in JSON format. Response is: '{response.text}'"
+
+        assert key_name not in response_as_dict, f"Response has a property '{key_name}', but shouldn't"
+
+
