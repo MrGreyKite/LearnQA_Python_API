@@ -38,8 +38,8 @@ class BaseCase:
 
         return {
             "password": "pass2ord",
-            "username": f"Test {random.randint(0, 1000)}",
-            "firstName": "Tes",
+            "username": f"UserTest {random.randint(0, 1000)}",
+            "firstName": "Test",
             "lastName": "Testy",
             "email": email
         }
