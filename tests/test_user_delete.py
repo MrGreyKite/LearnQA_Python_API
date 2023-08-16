@@ -1,9 +1,16 @@
+import allure
+
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequests
 
 
+@allure.epic("User Deletion cases")
 class TestUserDelete(BaseCase):
+
+    @allure.title("Deleting a default user")
+    @allure.description("Verifying that one of the default users cannot be deleted")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_default_user_delete(self):
         data = {
             "email": "vinkotov@example.com",
@@ -23,6 +30,9 @@ class TestUserDelete(BaseCase):
         Assertions.assert_status_code_is(response, 400)
         assert response.content.decode("utf-8") == "Please, do not delete test users with ID 1, 2, 3, 4 or 5."
 
+    @allure.title("Deleting an user when logged as this user")
+    @allure.description("Verifying that authorized user can be successfully deleted")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_user_successful(self):
         register_data = self.prepare_registration_data()
         response_user = MyRequests.post(self.url_create_user, data=register_data)
@@ -51,13 +61,15 @@ class TestUserDelete(BaseCase):
         Assertions.assert_status_code_is(response, 404)
         assert response.content.decode("utf-8") == "User not found"
 
+    @allure.title("Deleting an user when logged as another user")
+    @allure.description("Verifying that one user cannot delete another user")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_user_from_another_auth(self):
         register_data_1 = self.prepare_registration_data()
         response_user1 = MyRequests.post(self.url_create_user, data=register_data_1)
         self.first_user_id = self.get_json_value(response_user1, "id")
 
         register_data_2 = self.prepare_registration_data()
-        register_data_2['firstName'] = "SecUser"
         response_user2 = MyRequests.post(self.url_create_user, data=register_data_2)
         self.email_2 = register_data_2["email"]
         self.password_2 = register_data_2["password"]

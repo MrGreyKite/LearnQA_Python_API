@@ -1,10 +1,16 @@
+import allure
+
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequests
 
 
+@allure.epic("Getting User Info cases")
 class TestUserInfo(BaseCase):
 
+    @allure.title("Getting user info without auth")
+    @allure.description("Verifying that it's impossible to get complete userinfo without authorization")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_get_user_info_no_auth(self):
         user_id = "2"
         response = MyRequests.get(url=self.url_user_by_id_pattern + user_id)
@@ -14,6 +20,9 @@ class TestUserInfo(BaseCase):
         Assertions.assert_json_doesnt_have_key(response, "firstName")
         Assertions.assert_json_doesnt_have_key(response, "lastName")
 
+    @allure.title("Getting user info when logged as this user")
+    @allure.description("Verifying that user can get complete userinfo when authorized")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_get_user_info_as_same_user(self):
         data = {
             "email": "vinkotov@example.com",
@@ -31,6 +40,9 @@ class TestUserInfo(BaseCase):
                                        )
         Assertions.assert_json_has_keys(response_info, ["username", "email", "firstName", "lastName"])
 
+    @allure.title("Getting user info when logged as another user")
+    @allure.description("Verifying that user cannot get complete userinfo about another user")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_get_user_info_as_another_user(self):
         data = {
             "email": "vinkotov@example.com",

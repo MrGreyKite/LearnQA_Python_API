@@ -1,3 +1,4 @@
+import allure
 import requests
 
 from lib.logger import Logger
@@ -5,18 +6,22 @@ from lib.logger import Logger
 
 class MyRequests:
     @staticmethod
+    @allure.step("POST request on url: {url} with data {data}")
     def post(url: str, data: dict = None, headers: dict = None, cookies: dict = None):
         return MyRequests._send(url, data, headers, cookies, "POST")
 
     @staticmethod
+    @allure.step("GET request on url: {url} with data {data}")
     def get(url: str, data: dict = None, headers: dict = None, cookies: dict = None):
         return MyRequests._send(url, data, headers, cookies, "GET")
 
     @staticmethod
+    @allure.step("PUT request on url: {url} with data {data}")
     def put(url: str, data: dict = None, headers: dict = None, cookies: dict = None):
         return MyRequests._send(url, data, headers, cookies, "PUT")
 
     @staticmethod
+    @allure.step("DELETE request on url: {url} with data {data}")
     def delete(url: str, data: dict = None, headers: dict = None, cookies: dict = None):
         return MyRequests._send(url, data, headers, cookies, "DELETE")
 
@@ -41,5 +46,6 @@ class MyRequests:
             raise Exception(f"Bad HTTP method '{method}' was received")
 
         Logger.add_response_info(response)
+        allure.attach(response.text, "Server response is: ", allure.attachment_type.TEXT)
 
         return response

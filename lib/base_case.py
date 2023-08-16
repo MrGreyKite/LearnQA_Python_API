@@ -2,6 +2,7 @@ import json.decoder
 from datetime import datetime
 import random
 
+import allure
 from requests import Response
 
 
@@ -29,6 +30,7 @@ class BaseCase:
         assert key_name in response_as_dict, f"Response doesn't have a key '{key_name}'"
         return response_as_dict[key_name]
 
+    @allure.step("Preparing data for test user creation")
     def prepare_registration_data(self, email=None):
         if email is None:
             base_part = "learnqa"
